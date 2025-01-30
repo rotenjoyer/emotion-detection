@@ -8,14 +8,14 @@ async function startCamera() {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
 
-    // Adjust canvas size
+    // Adjust canvas size dynamically
     video.addEventListener('loadeddata', () => {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
     });
 }
 
-// Load MediaPipe Face Landmarker
+// Load MediaPipe FaceMesh
 async function loadFaceMesh() {
     const faceMesh = new FaceMesh({ locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/${file}` });
     faceMesh.setOptions({
@@ -28,7 +28,7 @@ async function loadFaceMesh() {
     return faceMesh;
 }
 
-// Draw face landmarks & detect emotions
+// Process FaceMesh results
 function processResults(results) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -41,35 +41,42 @@ function processResults(results) {
     }
 }
 
-// Draw facial landmarks
+// Draw face landmarks & connect key points
 function drawLandmarks(landmarks) {
-    ctx.strokeStyle = "cyan";
-    ctx.lineWidth = 2;
-    ctx.fillStyle = "red";
+    ctx.strokeStyle = "lime"; // Make the lines visible (neon green)
+    ctx.lineWidth = 3; // Increase thickness for visibility
+    ctx.fillStyle = "red"; // Color for landmark points
 
-    // Draw circles on key landmarks
+    // Convert normalized values to actual pixel positions
+    const getX = (index) => landmarks[index].x * canvas.width;
+    const getY = (index) => landmarks[index].y * canvas.height;
+
+    // Draw dots on landmarks
     landmarks.forEach((point) => {
         ctx.beginPath();
-        ctx.arc(point.x * canvas.width, point.y * canvas.height, 2, 0, 2 * Math.PI);
+        ctx.arc(point.x * canvas.width, point.y * canvas.height, 3, 0, 2 * Math.PI);
         ctx.fill();
     });
 
-    // Connect key facial points (eyebrows, mouth, etc.)
+    // Define connections for eyebrows, mouth, and key features
     const connections = [
-        [10, 151], // Brows
-        [13, 14],  // Mouth open
+        [10, 151], // Eyebrows (top of forehead to brow)
+        [13, 14],  // Mouth (top lip to bottom lip)
         [48, 54],  // Smile width
+        [33, 133], // Eye width
+        [61, 291]  // Cheek-to-cheek
     ];
 
+    // Draw lines between connected points
     connections.forEach(([start, end]) => {
         ctx.beginPath();
-        ctx.moveTo(landmarks[start].x * canvas.width, landmarks[start].y * canvas.height);
-        ctx.lineTo(landmarks[end].x * canvas.width, landmarks[end].y * canvas.height);
+        ctx.moveTo(getX(start), getY(start));
+        ctx.lineTo(getX(end), getY(end));
         ctx.stroke();
     });
 }
 
-// Emotion detection logic
+// Emotion detection logic (based on facial features)
 function detectEmotion(landmarks) {
     let mouthOpen = landmarks[13].y - landmarks[14].y;
     let browRaise = landmarks[10].y - landmarks[151].y;
