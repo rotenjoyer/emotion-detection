@@ -43,9 +43,9 @@ function processResults(results) {
 
 // Draw face landmarks & connect key points
 function drawLandmarks(landmarks) {
-    ctx.strokeStyle = "lime"; // Make the lines visible (neon green)
-    ctx.lineWidth = 3; // Increase thickness for visibility
-    ctx.fillStyle = "red"; // Color for landmark points
+    ctx.strokeStyle = "lime"; 
+    ctx.lineWidth = 3;
+    ctx.fillStyle = "red"; 
 
     // Convert normalized values to actual pixel positions
     const getX = (index) => landmarks[index].x * canvas.width;
@@ -76,17 +76,55 @@ function drawLandmarks(landmarks) {
     });
 }
 
-// Emotion detection logic (based on facial features)
+// **Advanced Emotion Detection**
 function detectEmotion(landmarks) {
     let mouthOpen = landmarks[13].y - landmarks[14].y;
     let browRaise = landmarks[10].y - landmarks[151].y;
     let smile = landmarks[48].x - landmarks[54].x;
+    let eyeOpenness = (landmarks[159].y - landmarks[145].y) + (landmarks[386].y - landmarks[374].y);
+    let cheekRaise = landmarks[61].y - landmarks[291].y;
+    let oneBrowHigher = landmarks[70].y - landmarks[300].y;
+    let smirkAsymmetry = Math.abs(landmarks[48].y - landmarks[54].y); // Difference in smile sides
 
     let emotion = "Neutral 😐";
-    if (smile > 0.02) emotion = "Happy 😊";
-    else if (browRaise > 0.03) emotion = "Surprised 😲";
-    else if (mouthOpen > 0.05) emotion = "Shocked 😱";
-    else if (browRaise < -0.02) emotion = "Angry 😡";
+
+    if (smirkAsymmetry > 0.005 && oneBrowHigher > 0.005 && eyeOpenness < 0.02) {
+        emotion = "Rizz 😏🔥"; // Smirk, raised eyebrow, relaxed eyes
+    } else if (smile > 0.02) {
+        emotion = "Happy 😊";
+    } else if (browRaise > 0.03) {
+        emotion = "Surprised 😲";
+    } else if (mouthOpen > 0.05) {
+        emotion = "Shocked 😱";
+    } else if (browRaise < -0.02) {
+        emotion = "Angry 😡";
+    } else if (smile < -0.02 && browRaise < -0.01) {
+        emotion = "Sad 😢";
+    } else if (smile < -0.03 && eyeOpenness < 0.01) {
+        emotion = "Depressed 😞";
+    } else if (browRaise > 0.02 && eyeOpenness > 0.02) {
+        emotion = "Nervous 😬";
+    } else if (oneBrowHigher > 0.01) {
+        emotion = "Confused 🤨";
+    } else if (cheekRaise > 0.01 && mouthOpen < 0.02) {
+        emotion = "Disgusted 🤢";
+    } else if (eyeOpenness < 0.005) {
+        emotion = "Tired 😴";
+    } else if (eyeOpenness > 0.03 && browRaise > 0.02) {
+        emotion = "Fearful 😨";
+    } else if (smile > 0.03 && mouthOpen > 0.02) {
+        emotion = "Excited 🤩";
+    } else if (smile > 0.01 && oneBrowHigher < -0.01) {
+        emotion = "Smirking 😏";
+    } else if (browRaise < -0.02 && mouthOpen < 0.02) {
+        emotion = "Worried 😟";
+    } else if (eyeOpenness < 0.003 && browRaise < -0.02) {
+        emotion = "Pain 😖";
+    } else if (browRaise < -0.01 && smile > 0.01) {
+        emotion = "Embarrassed 😳";
+    } else if (oneBrowHigher > 0.005 && smile < 0.01) {
+        emotion = "Doubtful 🤔";
+    }
 
     emotionText.innerText = emotion;
 }
