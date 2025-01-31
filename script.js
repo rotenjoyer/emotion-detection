@@ -77,18 +77,63 @@ function drawLandmarks(landmarks) {
 }
 
 // Emotion detection logic (based on facial features)
-function detectEmotion(landmarks) {
-    let mouthOpen = landmarks[13].y - landmarks[14].y;
-    let browRaise = landmarks[10].y - landmarks[151].y;
-    let smile = landmarks[48].x - landmarks[54].x;
+let emotion = "Neutral 😐";
 
-    let emotion = "Neutral 😐";
-    if (smile > 0.02) emotion = "Happy 😊";
-    else if (browRaise > 0.03) emotion = "Surprised 😲";
-    else if (mouthOpen > 0.05) emotion = "Shocked 😱";
-    else if (browRaise < -0.02) emotion = "Angry 😡";
+if (smile > 0.025) {
+    emotion = "Happy 😊";
+} else if (browRaise > 0.03) {
+    emotion = "Surprised 😲";
+} else if (mouthOpen > 0.05) {
+    emotion = "Shocked 😱";
+} else if (browRaise < -0.02) {
+    emotion = "Angry 😡";
+} else if (smile > 0.03 && mouthOpen > 0.04) {
+    emotion = "Excited 🤩";
+} else if (smile > 0.01 && mouthOpen < 0.02) {
+    emotion = "Content 😌";
+} else if (browRaise > 0.04 && mouthOpen < 0.03) {
+    emotion = "Surprised 😲";
+} else if (smile < -0.02 && browRaise < -0.03) {
+    emotion = "Sad 😢";
+} else if (smile < -0.03 && mouthOpen < 0.02) {
+    emotion = "Disappointed 😞";
+} else if (eyeOpenness > 0.03 && smile < 0.01) {
+    emotion = "Confused 🤨";
+} else if (eyeOpenness < 0.02 && mouthOpen < 0.03) {
+    emotion = "Sleepy 💤";
+} else if (browRaise > 0.05 && mouthOpen < 0.05) {
+    emotion = "Amazed 🤯";
+} else if (smile > 0.02 && mouthOpen > 0.02) {
+    emotion = "Excited 🤩";
+} else if (smile > 0.01 && oneBrowHigher < -0.01) {
+    emotion = "Smirking 😏";
+} else if (smile < -0.02 && browRaise < -0.01) {
+    emotion = "Crying 😢";
+} else if (smile < -0.02 && browRaise > -0.02) {
+    emotion = "Disappointed 😞";
+} else if (browRaise < -0.02 && eyeOpenness > 0.01) {
+    emotion = "Embarrassed 😳";
+} else if (eyeOpenness > 0.02 && browRaise < 0.01) {
+    emotion = "Lonely 🥺";
+} else if (browFurrow > 0.02 && lipTightness > 0.01) {
+    emotion = "Furious 🤬";
+} else if (browRaise < -0.02 && smirkAsymmetry > 0.005) {
+    emotion = "Annoyed 😤";
+} else if (eyeOpenness > 0.03 && browRaise > 0.02) {
+    emotion = "Terrified 😨";
+} else if (smile < 0.01 && browRaise > 0.01 && eyeOpenness < 0.02) {
+    emotion = "Nervous 😬";
+} else if (cheekRaise > 0.01 && mouthOpen < 0.02) {
+    emotion = "Disgusted 🤢";
+} else if (oneBrowHigher > 0.005 && smile < 0.01) {
+    emotion = "Displeased 🤨";
+} else if (eyeOpenness < 0.004 && mouthOpen > 0.02) {
+    emotion = "Sleepy 🥱";
+} else if (eyeOpenness < 0.002 && browRaise < -0.02) {
+    emotion = "Exhausted 😩";
+}
 
-    emotionText.innerText = emotion;
+emotionText.innerText = emotion;
 }
 
 // Initialize everything
