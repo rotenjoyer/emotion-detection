@@ -8,7 +8,8 @@ async function startCamera() {
     try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
-        video.onloadedmetadata = () => video.play(); // Ensure video starts
+        await new Promise((resolve) => (video.onloadedmetadata = resolve)); // Ensure it's loaded
+        video.play();
     } catch (error) {
         console.error("Webcam Error:", error);
     }
