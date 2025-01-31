@@ -79,7 +79,7 @@ function drawLandmarks(landmarks) {
 // Emotion detection logic (based on facial features)
 let emotion = "Neutral 😐";
 
-if (smile > 0.025) {
+if (smile > 0.02) {
     emotion = "Happy 😊";
 } else if (browRaise > 0.03) {
     emotion = "Surprised 😲";
