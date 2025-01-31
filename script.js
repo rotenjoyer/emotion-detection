@@ -88,9 +88,7 @@ function detectEmotion(landmarks) {
 
     let emotion = "Neutral 😐";
 
-    if (smirkAsymmetry > 0.005 && oneBrowHigher > 0.005 && eyeOpenness < 0.02) {
-        emotion = "Rizz 😏🔥"; // Smirk, raised eyebrow, relaxed eyes
-    } else if (smile > 0.02) {
+    else if (smile > 0.02) {
         emotion = "Happy 😊";
     } else if (browRaise > 0.03) {
         emotion = "Surprised 😲";
