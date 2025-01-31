@@ -36,7 +36,7 @@ function processResults(results) {
     if (results.multiFaceLandmarks) {
         for (const landmarks of results.multiFaceLandmarks) {
             drawLandmarks(landmarks);
-            detectEmotion(landmarks);
+            detectEmotion(landmarks);  // Detect emotion
         }
     }
 }
@@ -77,63 +77,74 @@ function drawLandmarks(landmarks) {
 }
 
 // Emotion detection logic (based on facial features)
-let emotion = "Neutral 😐";
+function detectEmotion(landmarks) {
+    let smile = landmarks[48].x - landmarks[54].x;
+    let browRaise = landmarks[10].y - landmarks[151].y;
+    let mouthOpen = landmarks[13].y - landmarks[14].y;
+    let eyeOpenness = (landmarks[159].y - landmarks[145].y) + (landmarks[386].y - landmarks[374].y);
+    let cheekRaise = landmarks[61].y - landmarks[291].y;
+    let oneBrowHigher = landmarks[70].y - landmarks[300].y;
+    let smirkAsymmetry = Math.abs(landmarks[48].y - landmarks[54].y);
+    let browFurrow = landmarks[21].y - landmarks[22].y;
+    let lipTightness = Math.abs(landmarks[0].x - landmarks[17].x);
 
-if (smile > 0.02) {
-    emotion = "Happy 😊";
-} else if (browRaise > 0.03) {
-    emotion = "Surprised 😲";
-} else if (mouthOpen > 0.05) {
-    emotion = "Shocked 😱";
-} else if (browRaise < -0.02) {
-    emotion = "Angry 😡";
-} else if (smile > 0.03 && mouthOpen > 0.04) {
-    emotion = "Excited 🤩";
-} else if (smile > 0.01 && mouthOpen < 0.02) {
-    emotion = "Content 😌";
-} else if (browRaise > 0.04 && mouthOpen < 0.03) {
-    emotion = "Surprised 😲";
-} else if (smile < -0.02 && browRaise < -0.03) {
-    emotion = "Sad 😢";
-} else if (smile < -0.03 && mouthOpen < 0.02) {
-    emotion = "Disappointed 😞";
-} else if (eyeOpenness > 0.03 && smile < 0.01) {
-    emotion = "Confused 🤨";
-} else if (eyeOpenness < 0.02 && mouthOpen < 0.03) {
-    emotion = "Sleepy 💤";
-} else if (browRaise > 0.05 && mouthOpen < 0.05) {
-    emotion = "Amazed 🤯";
-} else if (smile > 0.02 && mouthOpen > 0.02) {
-    emotion = "Excited 🤩";
-} else if (smile > 0.01 && oneBrowHigher < -0.01) {
-    emotion = "Smirking 😏";
-} else if (smile < -0.02 && browRaise < -0.01) {
-    emotion = "Crying 😢";
-} else if (smile < -0.02 && browRaise > -0.02) {
-    emotion = "Disappointed 😞";
-} else if (browRaise < -0.02 && eyeOpenness > 0.01) {
-    emotion = "Embarrassed 😳";
-} else if (eyeOpenness > 0.02 && browRaise < 0.01) {
-    emotion = "Lonely 🥺";
-} else if (browFurrow > 0.02 && lipTightness > 0.01) {
-    emotion = "Furious 🤬";
-} else if (browRaise < -0.02 && smirkAsymmetry > 0.005) {
-    emotion = "Annoyed 😤";
-} else if (eyeOpenness > 0.03 && browRaise > 0.02) {
-    emotion = "Terrified 😨";
-} else if (smile < 0.01 && browRaise > 0.01 && eyeOpenness < 0.02) {
-    emotion = "Nervous 😬";
-} else if (cheekRaise > 0.01 && mouthOpen < 0.02) {
-    emotion = "Disgusted 🤢";
-} else if (oneBrowHigher > 0.005 && smile < 0.01) {
-    emotion = "Displeased 🤨";
-} else if (eyeOpenness < 0.004 && mouthOpen > 0.02) {
-    emotion = "Sleepy 🥱";
-} else if (eyeOpenness < 0.002 && browRaise < -0.02) {
-    emotion = "Exhausted 😩";
-}
+    let emotion = "Neutral 😐";
 
-emotionText.innerText = emotion;
+    if (smile > 0.02) {
+        emotion = "Happy 😊";
+    } else if (browRaise > 0.03) {
+        emotion = "Surprised 😲";
+    } else if (mouthOpen > 0.05) {
+        emotion = "Shocked 😱";
+    } else if (browRaise < -0.02) {
+        emotion = "Angry 😡";
+    } else if (smile > 0.03 && mouthOpen > 0.04) {
+        emotion = "Excited 🤩";
+    } else if (smile > 0.01 && mouthOpen < 0.02) {
+        emotion = "Content 😌";
+    } else if (browRaise > 0.04 && mouthOpen < 0.03) {
+        emotion = "Surprised 😲";
+    } else if (smile < -0.02 && browRaise < -0.03) {
+        emotion = "Sad 😢";
+    } else if (smile < -0.03 && mouthOpen < 0.02) {
+        emotion = "Disappointed 😞";
+    } else if (eyeOpenness > 0.03 && smile < 0.01) {
+        emotion = "Confused 🤨";
+    } else if (eyeOpenness < 0.02 && mouthOpen < 0.03) {
+        emotion = "Sleepy 💤";
+    } else if (browRaise > 0.05 && mouthOpen < 0.05) {
+        emotion = "Amazed 🤯";
+    } else if (smile > 0.02 && mouthOpen > 0.02) {
+        emotion = "Excited 🤩";
+    } else if (smile > 0.01 && oneBrowHigher < -0.01) {
+        emotion = "Smirking 😏";
+    } else if (smile < -0.02 && browRaise < -0.01) {
+        emotion = "Crying 😢";
+    } else if (smile < -0.02 && browRaise > -0.02) {
+        emotion = "Disappointed 😞";
+    } else if (browRaise < -0.02 && eyeOpenness > 0.01) {
+        emotion = "Embarrassed 😳";
+    } else if (eyeOpenness > 0.02 && browRaise < 0.01) {
+        emotion = "Lonely 🥺";
+    } else if (browFurrow > 0.02 && lipTightness > 0.01) {
+        emotion = "Furious 🤬";
+    } else if (browRaise < -0.02 && smirkAsymmetry > 0.005) {
+        emotion = "Annoyed 😤";
+    } else if (eyeOpenness > 0.03 && browRaise > 0.02) {
+        emotion = "Terrified 😨";
+    } else if (smile < 0.01 && browRaise > 0.01 && eyeOpenness < 0.02) {
+        emotion = "Nervous 😬";
+    } else if (cheekRaise > 0.01 && mouthOpen < 0.02) {
+        emotion = "Disgusted 🤢";
+    } else if (oneBrowHigher > 0.005 && smile < 0.01) {
+        emotion = "Displeased 🤨";
+    } else if (eyeOpenness < 0.004 && mouthOpen > 0.02) {
+        emotion = "Sleepy 🥱";
+    } else if (eyeOpenness < 0.002 && browRaise < -0.02) {
+        emotion = "Exhausted 😩";
+    }
+
+    emotionText.innerText = emotion;
 }
 
 // Initialize everything
